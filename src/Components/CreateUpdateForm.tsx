@@ -1,30 +1,40 @@
-import {Button, Form, Input} from 'antd';
-import {useEffect} from "react";
+import { Button, Form, Input } from "antd";
+import React, { useEffect } from "react";
+import { NodeType } from "../Interfaces";
 
-const CreateForm = ({updateData, handleActions}) => {
+interface CreateUpdateFormProps {
+    updateData: NodeType | null;
+    handleActions: (data: any) => void;
+}
+
+const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ updateData , handleActions }) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
         if (updateData) {
             form.setFieldsValue({
                 name: updateData.name,
-                properties: JSON.stringify(updateData.properties, null, 2)
-            })
+                properties: JSON.stringify(updateData.properties, null, 2),
+            });
         }
         return () => form.resetFields();
-    }, [form, updateData, updateData?.id, updateData?.name, updateData?.properties])
+    }, [form, updateData]);
 
-    const onFinish = async (data) => {
+    const onFinish = async (data: any) => {
         if (updateData) {
-            handleActions({action: 'update', data: {id: updateData.id, name: data.name, properties: JSON.parse(data.properties)}})
-            form.resetFields();
+            handleActions({
+                action: 'update',
+                data: { id: updateData.id, name: data.name, properties: JSON.parse(data.properties) },
+            });
         } else {
-            handleActions({action: 'create', data})
-            form.resetFields();
+            handleActions({
+                action: 'create',
+                data: { id: data.id, name: data.name, properties: JSON.parse(data.properties) },
+            });
         }
     };
 
-    const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 
@@ -42,7 +52,7 @@ const CreateForm = ({updateData, handleActions}) => {
                 style={{
                     maxWidth: 600,
                 }}
-                initialValues={updateData}
+                initialValues={updateData || {}}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
@@ -53,11 +63,11 @@ const CreateForm = ({updateData, handleActions}) => {
                     rules={[
                         {
                             required: true,
-                            message: 'Please input name',
+                            message: 'Please enter name',
                         },
                     ]}
                 >
-                    <Input/>
+                    <Input />
                 </Form.Item>
 
                 <Form.Item
@@ -66,12 +76,12 @@ const CreateForm = ({updateData, handleActions}) => {
                     rules={[
                         {
                             required: true,
-                            message: 'Please input properties',
+                            message: 'Please enter properties',
                         },
                         {
                             validator: async (_, value) => {
                                 try {
-                                    JSON.parse(value)
+                                    JSON.parse(value);
                                 } catch (e) {
                                     throw new Error('Please enter valid JSON');
                                 }
@@ -79,7 +89,7 @@ const CreateForm = ({updateData, handleActions}) => {
                         },
                     ]}
                 >
-                    <Input.TextArea autoSize={{minRows: 8}}/>
+                    <Input.TextArea autoSize={{ minRows: 8 }} />
                 </Form.Item>
 
                 <Form.Item
@@ -94,7 +104,7 @@ const CreateForm = ({updateData, handleActions}) => {
                 </Form.Item>
             </Form>
         </>
-    )
+    );
 };
 
-export default CreateForm;
+export default CreateUpdateForm;
