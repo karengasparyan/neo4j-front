@@ -26,11 +26,14 @@ const CreateUpdateForm: React.FC<CreateUpdateFormProps> = ({ updateData , handle
                 action: 'update',
                 data: { id: updateData.id, name: data.name, properties: JSON.parse(data.properties) },
             });
+            form.resetFields();
         } else {
             handleActions({
                 action: 'create',
                 data: { id: data.id, name: data.name, properties: JSON.parse(data.properties) },
+
             });
+            form.resetFields();
         }
     };
 
