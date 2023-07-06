@@ -1,0 +1,33 @@
+.dataContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.dataItemContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+}
+
+.dataItem {
+    margin: 50px;
+    padding: 140px;
+    border-radius: 50%;
+    background-color: dodgerblue;
+    transition: 1s;
+    cursor: pointer;
+}
+
+.dataItem:hover {
+    margin: 60px;
+    padding: 150px;
+    background-color: #6ac755;
+    transition: 1s;
+}
+
+.keyTitle {
+    font-weight: bolder;
+    font-size: 16px;
+}
