@@ -5,11 +5,14 @@ const CreateForm = ({updateData, handleActions}) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        form.setFieldsValue({
-            name: updateData.name,
-            properties: JSON.stringify(updateData.properties, null, 2)
-        })
-    }, [form, updateData?.id, updateData?.name, updateData?.properties])
+        if (updateData) {
+            form.setFieldsValue({
+                name: updateData.name,
+                properties: JSON.stringify(updateData.properties, null, 2)
+            })
+        }
+        return () => form.resetFields();
+    }, [form, updateData, updateData?.id, updateData?.name, updateData?.properties])
 
     const onFinish = async (data) => {
         if (updateData) {
@@ -20,6 +23,7 @@ const CreateForm = ({updateData, handleActions}) => {
             form.resetFields();
         }
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
