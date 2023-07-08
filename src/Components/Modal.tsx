@@ -1,4 +1,4 @@
-import {Button, Modal} from 'antd';
+import  {Button, Modal } from 'antd';
 import CreateUpdateForm from './CreateUpdateForm';
 import React from "react";
 import {NodeType} from "../Interfaces";

@@ -2,8 +2,8 @@ import ModalCreateUpdate from "./Components/Modal";
 import React, { useEffect, useState } from "react";
 import { create, update, getAll, remove } from './services'
 import { Button, notification } from "antd";
-import {NotificationPlacement} from "antd/es/notification/interface";
-import {AllNodeDataType, NodeType} from "./Interfaces";
+import { NotificationPlacement } from "antd/es/notification/interface";
+import { AllNodeDataType, NodeType } from "./Interfaces";
 
 const App: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,6 +46,7 @@ const App: React.FC = () => {
         await handleActions({ action: 'delete', data: { id } });
     }
 
+    // I didn't use redux or other state managers because the project is small
     const handleActions = async ({ action, data }: { action: string, data: NodeType }) => {
         switch (action) {
             case 'create': {
@@ -55,7 +56,7 @@ const App: React.FC = () => {
                     hideModal();
                     setAction(action);
                 } else {
-                    //response error
+                    //response error handling
                     openNotification('bottomRight', newNode);
                 }
                 break;
@@ -67,15 +68,24 @@ const App: React.FC = () => {
                     hideModal();
                     setAction(action);
                 } else {
-                    //response error
+                    //response error handling
                     openNotification('bottomRight', updateNode);
                 }
                 break;
             }
-            case 'delete':
-                await remove(data.id);
+            case 'delete': {
+                const deleteNode = await remove(data.id);
+                if (deleteNode.id) {
+                    openNotification('bottomRight', action);
+                    hideModal();
+                    setAction(action);
+                } else {
+                    //response error handling
+                    openNotification('bottomRight', action);
+                }
                 break;
-            default:
+            }
+            default: openNotification('bottomRight', 'something went wrong');
         }
         setActionData(data);
     };
@@ -83,7 +93,7 @@ const App: React.FC = () => {
     return (
         <div className="App">
             {contextHolder}
-            <h1>Neo4j synchronize with Postgres</h1>
+            <h1 className="title">Neo4j synchronize with Postgres</h1>
             <ModalCreateUpdate
                 isModalOpen={isModalOpen}
                 updateData={updateData}
@@ -91,9 +101,10 @@ const App: React.FC = () => {
                 hideModal={hideModal}
                 handleActions={handleActions}
             />
+            {!data?.postgres?.length && <div><h3 className="emptyDataTitle">Please create nodes</h3></div>}
             <div className="dataContainer">
                 <div className="dataItemContainer">
-                    <h2>Postgres data</h2>
+                    <h2 className="title">Postgres data</h2>
                     {data?.postgres?.map(p => (
                         <div className="dataItem" key={p.id}>
                             <span className="keyTitle">id</span>
@@ -108,7 +119,7 @@ const App: React.FC = () => {
                     ))}
                 </div>
                 <div className="dataItemContainer">
-                    <h2>neo4j data</h2>
+                    <h2 className="title">neo4j data</h2>
                     {data?.neo4j?.map(p => (
                         <div className="dataItem" key={p.id}>
                             <span className="keyTitle">id</span>

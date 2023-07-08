@@ -1,44 +1,45 @@
 import axios, { AxiosResponse } from "axios";
-import {AllNodeDataType, NodeType} from "./Interfaces";
+import { AllNodeDataType, NodeType } from "./Interfaces";
 
-const BASE_URL = 'http://localhost:4000/api/node';
+const baseURL = 'http://localhost:4000/api';
+const api = axios.create({ baseURL });
 
 const create = async ({ name, properties }: NodeType) => {
     try {
-        const response: AxiosResponse<{ data: NodeType }> = await axios.post(`${BASE_URL}`, { name, properties });
+        const response: AxiosResponse<{ data: NodeType }> = await api.post('/node', { name, properties });
         return response.data.data;
     } catch (e: any) {
         console.error(e);
-        return e.response.data.errors;
+        return e.response.data.errors || e.message;
     }
 };
 
 const update = async (data: NodeType) => {
     try {
-        const response: AxiosResponse<{ data: NodeType }> = await axios.put(`${BASE_URL}/${data.id}`, {
+        const response: AxiosResponse<{ data: NodeType }> = await api.put(`/node/${data.id}`, {
             name: data.name,
             properties: data.properties
         });
         return response.data.data;
     } catch (e: any) {
         console.error(e);
-        return e.response.data.errors;
+        return e.response.data.errors || e.message;
     }
 };
 
 const remove = async (id: string | undefined) => {
     try {
-        const response: AxiosResponse<{ data: NodeType }> = await axios.delete(`${BASE_URL}/${id}`);
+        const response: AxiosResponse<{ data: NodeType }> = await api.delete(`/node/${id}`);
         return response.data.data;
-    } catch (e) {
+    } catch (e: any) {
         console.error(e);
-        return null;
+        return e.response.data.errors || e.message;
     }
 };
 
 const getById = async (id: number) => {
     try {
-        const response: AxiosResponse<{ data: NodeType }> = await axios.get(`${BASE_URL}/${id}`);
+        const response: AxiosResponse<{ data: NodeType }> = await api.get(`/node/${id}`);
         return response.data.data;
     } catch (e) {
         console.error(e);
@@ -48,7 +49,7 @@ const getById = async (id: number) => {
 
 const getAll = async () => {
     try {
-        const response: AxiosResponse<{ data: AllNodeDataType }> = await axios.get(`${BASE_URL}/all`);
+        const response: AxiosResponse<{ data: AllNodeDataType }> = await api.get(`/node/all`);
         return response.data.data;
     } catch (e) {
         console.error(e);
